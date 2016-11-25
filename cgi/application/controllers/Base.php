@@ -2,7 +2,20 @@
 
 class BaseController extends Yaf_Controller_Abstract
 {
-    protected function response($ret)
+    protected $inputData;
+    
+    protected function init()
+    {
+        $this->inputData = $_GET;
+        $source = empty($this->inputData['source']) ? DEFAULT_SOURCE : $this->inputData['source'];
+        define('SOURCE', $source);
+    }
+    
+    public function __destruct() {
+        Amq::getInstance()->close();
+    }
+
+    protected function response($ret, $route)
     {
         $resp = '';
         
@@ -11,7 +24,10 @@ class BaseController extends Yaf_Controller_Abstract
         } else {
             $msg = !empty($ret['msg']) ? $ret['msg'] : '';
             $resp = $this->responseFailed($ret['code'], $msg);
+            $ret['data'] = new stdClass();
         }
+        
+        $this->reqLog($route, $ret);
         
         echo $resp;
     }
@@ -21,7 +37,7 @@ class BaseController extends Yaf_Controller_Abstract
         $response = [
             'code' => CODE_SUCCESS,
             'msg' => MSG_SUCCESS,
-            'body' => $data
+            'data' => $data
         ];
 
         return json_encode($response,JSON_UNESCAPED_UNICODE);
@@ -32,9 +48,47 @@ class BaseController extends Yaf_Controller_Abstract
         $response = [
             'code' => (int)$code,
             'msg' => $msg,
-            'body' => []
+            'data' => new stdClass()
         ];
         
         return json_encode($response,JSON_UNESCAPED_UNICODE);
+    }
+    
+    private function reqLog($route, $ret)
+    {
+        $reqData = json_encode($this->inputData);
+        
+        $resp = json_encode($ret['data'], JSON_UNESCAPED_UNICODE);
+        
+        $param = [
+            'meta' => [
+                'req_no' => REQ_NO,
+                'step' => 0,
+                'source' => SOURCE,
+                'remote_ip' => ip2long($_SERVER['REMOTE_ADDR']),
+                'req_time' => START_TIME
+            ],
+            'route' => REQLOG_ROUTE,
+            'data' => [
+                'module' => MODULE,
+                'route' => $route,
+                'req_data' => $reqData,
+                'req_size' => strlen($reqData),
+                'cost_time' => $this->getCostTime(),
+                'code' => $ret['code'],
+                'msg' => $ret['msg'],
+                'resp_data' => $resp,
+                'resp_size' => strlen($resp)
+            ]
+        ];
+        
+        return Amq::getInstance()->callReqLog($param);
+    }
+    
+    private function getCostTime()
+    {
+        $costTime = (time()-START_TIME+getMicrotime()-MICRO_TIME)*1E+6;
+        
+        return (int)$costTime;
     }
 }

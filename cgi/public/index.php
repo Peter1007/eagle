@@ -11,7 +11,12 @@ define('CODE_SUCCESS', 0);
 define('CODE_ERROR', -1);
 define('MSG_SUCCESS', 'success');
 define('ENV', 'dev');
-define('REQ_ID', md5(uniqid().mt_rand(0, 1000000)));
+define('REQ_NO', md5(uniqid().mt_rand(0, 1000000)));
+define('START_TIME', time());
+define('MICRO_TIME', getMicrotime());
+define('DEFAULT_SOURCE', 'web');
+define('MODULE', 'cgi_web');
+define('REQLOG_ROUTE', 'reqlog/add');
 
 ini_set('yaf.library', APP_PATH.'/lib');
 
@@ -23,6 +28,12 @@ Yaf_Dispatcher::getInstance()->disableView();
 
 $app  = new Yaf_Application(APP_PATH.'/conf/application.ini', ENV);
 $app->run();
+
+function getMicrotime()
+{
+    $mtime = explode(" ", microtime());
+    return $mtime[0];
+}
 
 //$xhprof_data = xhprof_disable();
 //$XHPROF_ROOT = "D:\xhj\xhprof";
