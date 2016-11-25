@@ -1,0 +1,7 @@
+get_list:
+  status_id:
+    required: 0
+    defaultvalue: 0
+    valuetype: integer
+    min: 0
+    max: 2

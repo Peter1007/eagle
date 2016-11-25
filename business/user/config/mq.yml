@@ -1,0 +1,17 @@
+frontend:
+  host: amqp://businessuser:businesspasswd@192.168.1.129:5672/business
+  type: 1
+  queue: business_user
+
+service:
+  host: amqp://serviceuser:servicepasswd@192.168.1.129:5672/service
+  queues:
+    user: service_user
+    base: service_base
+
+statistic:
+  host: amqp://statisticuser:statisticpasswd@192.168.1.129:5672/statistic
+  items:
+    reqlog:
+      exchangename: statistic_reqlog
+      key: business_user

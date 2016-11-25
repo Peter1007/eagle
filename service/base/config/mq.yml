@@ -1,0 +1,11 @@
+frontend:
+  host: amqp://serviceuser:servicepasswd@192.168.1.129:5672/service
+  type: 1
+  queue: service_base
+
+statistic:
+  host: amqp://statisticuser:statisticpasswd@192.168.1.129:5672/statistic
+  items:
+    reqlog:
+      exchangename: statistic_reqlog
+      key: service_base
