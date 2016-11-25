@@ -1,0 +1,20 @@
+CREATE TABLE `reqlog_20161125` (
+  `reqlog_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `req_no` char(32) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '请求序列号',
+  `step` smallint(5) unsigned DEFAULT '0' COMMENT '请求步骤',
+  `source` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '请求来源',
+  `req_time` int(10) unsigned DEFAULT '0' COMMENT '请求时间(时间戳)',
+  `module` varchar(31) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '请求模块',
+  `route` varchar(63) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '请求路由',
+  `remote_ip` int(10) unsigned DEFAULT '0' COMMENT '请求IP',
+  `req_data` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '请求数据(长度最大255)',
+  `req_data_size` int(10) unsigned DEFAULT '0' COMMENT '请求数据长度',
+  `cost_time` int(10) unsigned DEFAULT '0' COMMENT '执行时间(微秒)',
+  `resp_code` mediumint(8) unsigned DEFAULT '0' COMMENT '响应状态码',
+  `resp_msg` varchar(127) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '响应信息',
+  `resp_data` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '响应数据(长度最大255)',
+  `resp_data_size` int(10) unsigned DEFAULT '0' COMMENT '响应数据长度',
+  PRIMARY KEY (`reqlog_id`),
+  KEY `req_time` (`req_time`),
+  KEY `req_no` (`req_no`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
